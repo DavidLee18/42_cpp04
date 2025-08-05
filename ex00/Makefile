@@ -1,4 +1,4 @@
-SOURCE := main.cpp Animal.cpp Dog.cpp Cat.cpp
+SOURCE := main.cpp Animal.cpp Dog.cpp Cat.cpp WrongAnimal.cpp WrongCat.cpp
 
 NAME := polymorphism
 
