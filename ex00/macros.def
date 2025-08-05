@@ -1,0 +1,321 @@
+#ifndef MACROS_DEF
+#define MACROS_DEF
+
+#define STRINGIZE(arg)  STRINGIZE1(arg)
+#define STRINGIZE1(arg) STRINGIZE2(arg)
+#define STRINGIZE2(arg) #arg
+
+#define CONCATENATE(arg1, arg2)   CONCATENATE1(arg1, arg2)
+#define CONCATENATE1(arg1, arg2)  CONCATENATE2(arg1, arg2)
+#define CONCATENATE2(arg1, arg2)  arg1##arg2
+
+#define DEF_GETTER_SETTER(fname, ty) ty get##fname() const; \
+	void set##fname(ty const);
+
+#define DEF_OCF(cname) cname(); \
+	cname(const cname&); \
+	cname& operator=(const cname&); \
+	~cname();
+
+#define DEF_OCF_(cname, ...) cname(__VA_ARGS__); \
+	cname(const cname&); \
+	cname& operator=(const cname&); \
+	~cname();
+
+#define DEF_SHOW(cname) std::ostream& operator<<(std::ostream&, const cname&);
+
+#define DEF_EQ(cname) bool operator==(const cname&) const; \
+	bool operator!=(const cname&) const;
+
+#define DEF_ORD(cname) DEF_EQ(cname) \
+	bool operator<(const cname&) const; \
+	bool operator>(const cname&) const; \
+	bool operator<=(const cname&) const; \
+	bool operator>=(const cname&) const; \
+	static cname& min(const cname&, const cname&); \
+	static cname& min(cname&, cname&); \
+	static cname& max(const cname&, const cname&); \
+	static cname& max(cname&, cname&);
+
+#define DEF_NUM(cname) cname operator+() const; \
+	cname operator-() const; \
+	cname operator+(const cname&) const; \
+	cname operator-(const cname&) const; \
+	cname operator*(const cname&) const;
+
+#define DEF_FRAC(cname) DEF_NUM(cname) \
+	cname operator/(const cname&) const; \
+	cname operator%(const cname&) const;
+
+#define DEF_INCR_DECR(cname) cname& operator++(); \
+	cname operator++(int); \
+	cname& operator--(); \
+	cname operator--(int);
+
+
+
+#define IMPL_GETTER_SETTER(cname, fname, ty, field, param) ty cname::get##fname() const { \
+	std::cout << #cname << "::get" << #fname << "()" << std::endl; \
+	return this->field; \
+	} \
+	void cname::set##fname(ty const param) { \
+	std::cout << #cname << "::set" << #fname << "(" << #ty << ")" << std::endl; \
+	this->field = param; \
+	}
+
+#define IMPL_DES(cname) cname::~cname() { \
+	std::cout << "~" << #cname << "()" << std::endl; \
+	}
+
+#define RSEQ_N() 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
+#define ARG_N(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, N, ...) N
+#define NARG_(...) ARG_N(__VA_ARGS__)
+#define NARG(...) NARG_(__VA_ARGS__, RSEQ_N())
+
+#define IMPL_INIT_LIST_1(field, val) field(val)
+#define IMPL_INIT_LIST_2(field, val, ...) field(val), IMPL_INIT_LIST_1(__VA_ARGS__)
+#define IMPL_INIT_LIST_3(field, val, ...) field(val), IMPL_INIT_LIST_2(__VA_ARGS__)
+#define IMPL_INIT_LIST_4(field, val, ...) field(val), IMPL_INIT_LIST_3(__VA_ARGS__)
+#define IMPL_INIT_LIST_5(field, val, ...) field(val), IMPL_INIT_LIST_4(__VA_ARGS__)
+#define IMPL_INIT_LIST_6(field, val, ...) field(val), IMPL_INIT_LIST_5(__VA_ARGS__)
+#define IMPL_INIT_LIST_7(field, val, ...) field(val), IMPL_INIT_LIST_6(__VA_ARGS__)
+#define IMPL_INIT_LIST_8(field, val, ...) field(val), IMPL_INIT_LIST_7(__VA_ARGS__)
+#define IMPL_INIT_LIST_9(field, val, ...) field(val), IMPL_INIT_LIST_8(__VA_ARGS__)
+#define IMPL_INIT_LIST_10(field, val, ...) field(val), IMPL_INIT_LIST_9(__VA_ARGS__)
+
+#define RSEQ_ODD_N() 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0
+#define ARG_ODD_N(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, N, ...) N
+#define ODD_NARG_(...) ARG_ODD_N(__VA_ARGS__)
+#define ODD_NARG(...) ODD_NARG_(__VA_ARGS__, RSEQ_ODD_N())
+
+#define IMPL_INIT_LIST_(N, ...) CONCATENATE(IMPL_INIT_LIST_, N)(__VA_ARGS__)
+#define IMPL_INIT_LIST(...) IMPL_INIT_LIST_(ODD_NARG(__VA_ARGS__), __VA_ARGS__)
+
+#define IMPL_CONS_COPY_FIELD_ODD_1(param, field, val) this->field = param.field;
+#define IMPL_CONS_COPY_FIELD_ODD_2(param, field, val, ...) this->field = param.field; \
+	IMPL_CONS_COPY_FIELD_ODD_1(param, __VA_ARGS__)
+#define IMPL_CONS_COPY_FIELD_ODD_3(param, field, val, ...) this->field = param.field; \
+	IMPL_CONS_COPY_FIELD_ODD_2(param, __VA_ARGS__)
+#define IMPL_CONS_COPY_FIELD_ODD_4(param, field, val, ...) this->field = param.field; \
+	IMPL_CONS_COPY_FIELD_ODD_3(param, __VA_ARGS__)
+#define IMPL_CONS_COPY_FIELD_ODD_5(param, field, val, ...) this->field = param.field; \
+	IMPL_CONS_COPY_FIELD_ODD_4(param, __VA_ARGS__)
+#define IMPL_CONS_COPY_FIELD_ODD_6(param, field, val, ...) this->field = param.field; \
+	IMPL_CONS_COPY_FIELD_ODD_5(param, __VA_ARGS__)
+#define IMPL_CONS_COPY_FIELD_ODD_7(param, field, val, ...) this->field = param.field; \
+	IMPL_CONS_COPY_FIELD_ODD_6(param, __VA_ARGS__)
+#define IMPL_CONS_COPY_FIELD_ODD_8(param, field, val, ...) this->field = param.field; \
+	IMPL_CONS_COPY_FIELD_ODD_7(param, __VA_ARGS__)
+#define IMPL_CONS_COPY_FIELD_ODD_9(param, field, val, ...) this->field = param.field; \
+	IMPL_CONS_COPY_FIELD_ODD_8(param, __VA_ARGS__)
+#define IMPL_CONS_COPY_FIELD_ODD_10(param, field, val, ...) this->field = param.field; \
+	IMPL_CONS_COPY_FIELD_ODD_9(param, __VA_ARGS__)
+
+#define IMPL_CONS_COPY_FIELD_ODD_(N, param, ...) \
+	CONCATENATE(IMPL_CONS_COPY_FIELD_ODD_, N)(param, __VA_ARGS__)
+#define IMPL_CONS_COPY_FIELD_ODD(param, ...) \
+	IMPL_CONS_COPY_FIELD_ODD_(ODD_NARG(__VA_ARGS__), param, __VA_ARGS__)
+
+#define IMPL_INIT_LIST_COPY_ODD_1(param, field, val) field(param.field)
+#define IMPL_INIT_LIST_COPY_ODD_2(param, field, val, ...) field(param.field), \
+	IMPL_INIT_LIST_COPY_ODD_1(param, __VA_ARGS__)
+#define IMPL_INIT_LIST_COPY_ODD_3(param, field, val, ...) field(param.field), \
+	IMPL_INIT_LIST_COPY_ODD_2(param, __VA_ARGS__)
+#define IMPL_INIT_LIST_COPY_ODD_4(param, field, val, ...) field(param.field), \
+	IMPL_INIT_LIST_COPY_ODD_3(param, __VA_ARGS__)
+#define IMPL_INIT_LIST_COPY_ODD_5(param, field, val, ...) field(param.field), \
+	IMPL_INIT_LIST_COPY_ODD_4(param, __VA_ARGS__)
+#define IMPL_INIT_LIST_COPY_ODD_6(param, field, val, ...) field(param.field), \
+	IMPL_INIT_LIST_COPY_ODD_5(param, __VA_ARGS__)
+#define IMPL_INIT_LIST_COPY_ODD_7(param, field, val, ...) field(param.field), \
+	IMPL_INIT_LIST_COPY_ODD_6(param, __VA_ARGS__)
+#define IMPL_INIT_LIST_COPY_ODD_8(param, field, val, ...) field(param.field), \
+	IMPL_INIT_LIST_COPY_ODD_7(param, __VA_ARGS__)
+#define IMPL_INIT_LIST_COPY_ODD_9(param, field, val, ...) field(param.field), \
+	IMPL_INIT_LIST_COPY_ODD_8(param, __VA_ARGS__)
+#define IMPL_INIT_LIST_COPY_ODD_10(param, field, val, ...) field(param.field), \
+	IMPL_INIT_LIST_COPY_ODD_9(param, __VA_ARGS__)
+
+#define IMPL_INIT_LIST_COPY_ODD_(N, param, ...) \
+	CONCATENATE(IMPL_INIT_LIST_COPY_ODD_, N)(param, __VA_ARGS__)
+#define IMPL_INIT_LIST_COPY_ODD(param, ...) \
+	IMPL_INIT_LIST_COPY_ODD_(ODD_NARG(__VA_ARGS__), param, __VA_ARGS__)
+
+#define IMPL_CONS_COPY_ODD(cname, param, ...) cname::cname(const cname& param): \
+	IMPL_INIT_LIST_COPY_ODD(param, __VA_ARGS__) { \
+	std::cout << #cname << "(const " << #cname << "&)" << std::endl; \
+	}
+
+#define IMPL_ASSIGN_ODD(cname, param, ...) cname& cname::operator=(const cname& param) { \
+	IMPL_CONS_COPY_FIELD_ODD(param, __VA_ARGS__) \
+	std::cout << #cname << "::operator=(const " << #cname << "&)" << std::endl; \
+	return *this; \
+	}
+
+#define IMPL_CONS_0(cname, ...) cname::cname(): IMPL_INIT_LIST(__VA_ARGS__) {\
+	std::cout << #cname << "()" << std::endl; \
+	}
+#define IMPL_CONS_1(cname, param, ...) cname::cname(param): IMPL_INIT_LIST(__VA_ARGS__) {\
+	std::cout << #cname << "(" << #param << ")" << std::endl; \
+	}
+#define IMPL_CONS_2(cname, param1, param2, ...) cname::cname(param1, param2): IMPL_INIT_LIST(__VA_ARGS__) {\
+	std::cout << #cname << "(" << #param1 << ", " << #param2 << ")" << std::endl; \
+	}
+#define IMPL_CONS_3(cname, param1, param2, param3, ...) cname::cname(param1, param2, param3): IMPL_INIT_LIST(__VA_ARGS__) {\
+	std::cout << #cname << "(" << #param1 << ", " << #param2 << ", " << #param3 << ")" << std::endl; \
+	}
+#define IMPL_CONS_4(cname, param1, param2, param3, param4, ...) cname::cname(param1, param2, param3, param4): IMPL_INIT_LIST(__VA_ARGS__) {\
+	std::cout << #cname << "(" << #param1 << ", " << #param2 << ", " << #param3 << ", " << #param4 << ")" << std::endl; \
+	}
+#define IMPL_CONS_5(cname, param1, param2, param3, param4, param5, ...) cname::cname(param1, param2, param3, param4, param5): IMPL_INIT_LIST(__VA_ARGS__) {\
+	std::cout << #cname << "(" << #param1 << ", " << #param2 << ", " << #param3 << ", " << #param4 << ", " << #param5 << ")" << std::endl; \
+	}
+#define IMPL_CONS_6(cname, param1, param2, param3, param4, param5, param6, ...) cname::cname(param1, param2, param3, param4, param5, param6): IMPL_INIT_LIST(__VA_ARGS__) {\
+	std::cout << #cname << "(" << #param1 << ", " << #param2 << ", " << #param3 << ", " << #param4 << ", " << #param5 << ", " << #param6 << ")" << std::endl; \
+	}
+#define IMPL_CONS_7(cname, param1, param2, param3, param4, param5, param6, param7, ...) cname::cname(param1, param2, param3, param4, param5, param6, param7): IMPL_INIT_LIST(__VA_ARGS__) {\
+	std::cout << #cname << "(" << #param1 << ", " << #param2 << ", " << #param3 << ", " << #param4 << ", " << #param5 << ", " << #param6 << ", " << #param7 << ")" << std::endl; \
+	}
+#define IMPL_CONS_8(cname, param1, param2, param3, param4, param5, param6, param7, param8, ...) cname::cname(param1, param2, param3, param4, param5, param6, param7, param8): IMPL_INIT_LIST(__VA_ARGS__) {\
+	std::cout << #cname << "(" << #param1 << ", " << #param2 << ", " << #param3 << ", " << #param4 << ", " << #param5 << ", " << #param6 << ", " << #param7 << ", " << #param8 << ")" << std::endl; \
+	}
+#define IMPL_CONS_9(cname, param1, param2, param3, param4, param5, param6, param7, param8, param9, ...) cname::cname(param1, param2, param3, param4, param5, param6, param7, param8, param9): IMPL_INIT_LIST(__VA_ARGS__) {\
+	std::cout << #cname << "(" << #param1 << ", " << #param2 << ", " << #param3 << ", " << #param4 << ", " << #param5 << ", " << #param6 << ", " << #param7 << ", " << #param8 << ", " << #param9 << ")" << std::endl; \
+	}
+
+#define DROP_0(...) __VA_ARGS__
+#define DROP_1(param, ...) DROP_0(__VA_ARGS__)
+#define DROP_2(param, ...) DROP_1(__VA_ARGS__)
+#define DROP_3(param, ...) DROP_2(__VA_ARGS__)
+#define DROP_4(param, ...) DROP_3(__VA_ARGS__)
+#define DROP_5(param, ...) DROP_4(__VA_ARGS__)
+#define DROP_6(param, ...) DROP_5(__VA_ARGS__)
+#define DROP_7(param, ...) DROP_6(__VA_ARGS__)
+#define DROP_8(param, ...) DROP_7(__VA_ARGS__)
+#define DROP_9(param, ...) DROP_8(__VA_ARGS__)
+
+#define DROP(N, ...) CONCATENATE(DROP_, N)(__VA_ARGS__)
+
+#define IMPL_CONS(cname, N, ...) \
+	CONCATENATE(IMPL_CONS_, N)(cname, __VA_ARGS__)
+
+#define IMPL_OCF(cname, param, ...) \
+	IMPL_CONS(cname, __VA_ARGS__) \
+	IMPL_CONS_COPY_ODD(cname, param, DROP(__VA_ARGS__)) \
+	IMPL_ASSIGN_ODD(cname, param, DROP(__VA_ARGS__)) \
+	IMPL_DES(cname)
+
+#define BOOL_OP_FIELD_1(param, op, field) (this->field op param.field)
+#define BOOL_OP_FIELD_2(param, op, field, ...) (this->field op param.field) \
+	&& BOOL_OP_FIELD_1(param, op, __VA_ARGS__)
+#define BOOL_OP_FIELD_3(param, op, field, ...) (this->field op param.field) \
+	&& BOOL_OP_FIELD_2(param, op, __VA_ARGS__)
+#define BOOL_OP_FIELD_4(param, op, field, ...) (this->field op param.field) \
+	&& BOOL_OP_FIELD_3(param, op, __VA_ARGS__)
+#define BOOL_OP_FIELD_5(param, op, field, ...) (this->field op param.field) \
+	&& BOOL_OP_FIELD_4(param, op, __VA_ARGS__)
+#define BOOL_OP_FIELD_6(param, op, field, ...) (this->field op param.field) \
+	&& BOOL_OP_FIELD_5(param, op, __VA_ARGS__)
+#define BOOL_OP_FIELD_7(param, op, field, ...) (this->field op param.field) \
+	&& BOOL_OP_FIELD_6(param, op, __VA_ARGS__)
+#define BOOL_OP_FIELD_8(param, op, field, ...) (this->field op param.field) \
+	&& BOOL_OP_FIELD_7(param, op, __VA_ARGS__)
+#define BOOL_OP_FIELD_9(param, op, field, ...) (this->field op param.field) \
+	&& BOOL_OP_FIELD_8(param, op, __VA_ARGS__)
+#define BOOL_OP_FIELD_10(param, op, field, ...) (this->field op param.field) \
+	&& BOOL_OP_FIELD_9(param, op, __VA_ARGS__)
+
+#define BOOL_OP_FIELD_(N, param, op, ...) CONCATENATE(BOOL_OP_FIELD_, N)(param, op, __VA_ARGS__)
+#define BOOL_OP_FIELD(param, op, ...) BOOL_OP_FIELD_(NARG(__VA_ARGS__), param, op, __VA_ARGS__)
+
+#define IMPL_EQ(cname, param, ...) bool cname::operator==(const cname& param) const { \
+	return BOOL_OP_FIELD(param, ==, __VA_ARGS__); \
+	} \
+	bool cname::operator!=(const cname& param) const { return !(*this == param); }
+
+#define IMPL_ORD(cname, param, ...) IMPL_EQ(cname, param, __VA_ARGS__) \
+	bool cname::operator<(const cname& param) const { \
+	return BOOL_OP_FIELD(param, <, __VA_ARGS__); \
+	} \
+	bool cname::operator>(const cname& param) const { return (*this != param) && !(*this < param); } \
+	bool cname::operator<=(const cname& param) const { return (*this == param) || (*this < param); } \
+	bool cname::operator>=(const cname& param) const { return (*this == param) || (*this > param); } \
+	cname& cname::min(const cname& _this, const cname& param) { \
+	return (_this < param ? (cname&)_this : (cname&)param); \
+	} \
+	cname& cname::min(cname& _this, cname& param) { \
+	return (_this < param ? _this : param); \
+	} \
+	cname& cname::max(const cname& _this, const cname& param) { \
+	return (_this > param ? (cname&)_this : (cname&)param); \
+	} \
+	cname& cname::max(cname& _this, cname& param) { \
+	return (_this > param ? _this : param); \
+	}
+
+#define ARITH_OP_FIELD_1(nval, param, op, field) nval.field = this->field op param.field;
+#define ARITH_OP_FIELD_2(nval, param, op, field, ...) nval.field = this->field op param.field; \
+	ARITH_OP_FIELD_1(nval, param, op, __VA_ARGS__)
+#define ARITH_OP_FIELD_3(nval, param, op, field, ...) nval.field = this->field op param.field; \
+	ARITH_OP_FIELD_2(nval, param, op, __VA_ARGS__)
+#define ARITH_OP_FIELD_4(nval, param, op, field, ...) nval.field = this->field op param.field; \
+	ARITH_OP_FIELD_3(nval, param, op, __VA_ARGS__)
+#define ARITH_OP_FIELD_5(nval, param, op, field, ...) nval.field = this->field op param.field; \
+	ARITH_OP_FIELD_4(nval, param, op, __VA_ARGS__)
+#define ARITH_OP_FIELD_6(nval, param, op, field, ...) nval.field = this->field op param.field; \
+	ARITH_OP_FIELD_5(nval, param, op, __VA_ARGS__)
+#define ARITH_OP_FIELD_7(nval, param, op, field, ...) nval.field = this->field op param.field; \
+	ARITH_OP_FIELD_6(nval, param, op, __VA_ARGS__)
+#define ARITH_OP_FIELD_8(nval, param, op, field, ...) nval.field = this->field op param.field; \
+	ARITH_OP_FIELD_7(nval, param, op, __VA_ARGS__)
+#define ARITH_OP_FIELD_9(nval, param, op, field, ...) nval.field = this->field op param.field; \
+	ARITH_OP_FIELD_8(nval, param, op, __VA_ARGS__)
+#define ARITH_OP_FIELD_10(nval, param, op, field, ...) nval.field = this->field op param.field; \
+	ARITH_OP_FIELD_9(nval, param, op, __VA_ARGS__)
+
+#define ARITH_OP_FIELD_(N, nval, param, op, ...) \
+	CONCATENATE(ARITH_OP_FIELD_, N)(nval, param, op, __VA_ARGS__)
+#define ARITH_OP_FIELD(nval, param, op, ...) \
+	ARITH_OP_FIELD_(NARG(__VA_ARGS__), nval, param, op, __VA_ARGS__)
+
+#define IMPL_ARITH_METHOD(cname, mname, nval, param, op, field) \
+	cname cname::mname(const cname& param) const { \
+	return cname(this->field op param.field); \
+	}
+
+#define IMPL_NUM(cname, param, ...) cname cname::operator+() const { \
+	return *this; \
+	} \
+	cname cname::operator-() const { \
+	return (*this) * cname(-1); \
+	} \
+	IMPL_ARITH_METHOD(cname, operator+, _new, param, +, __VA_ARGS__) \
+	IMPL_ARITH_METHOD(cname, operator-, _new, param, -, __VA_ARGS__) \
+	IMPL_ARITH_METHOD(cname, operator*, _new, param, *, __VA_ARGS__)
+
+#define IMPL_FRAC(cname, param, ...) IMPL_NUM(cname, param, __VA_ARGS__) \
+	IMPL_ARITH_METHOD(cname, operator/, _new, param, /, __VA_ARGS__) \
+	cname cname::operator%(const cname& param) const { \
+	return (*this - ((*this / param) * param)); \
+	}
+
+#define IMPL_INCR_DECR(cname, param, field) cname& cname::operator++() { \
+	this->field++; return *this; \
+	} \
+	cname cname::operator++(int i) { \
+	(void)i; \
+	cname temp = *this; \
+	this->field++; \
+	return temp; \
+	} \
+	cname& cname::operator--() { \
+	this->field--; return *this; \
+	} \
+	cname cname::operator--(int i) { \
+	(void)i; \
+	cname temp = *this; \
+	this->field--; \
+	return temp; \
+	}
+
+#endif
