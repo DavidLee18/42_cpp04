@@ -4,7 +4,8 @@ WrongCat ::WrongCat() {
   this->type = "XXXCATXXX";
   std ::cout << "WrongCat" << "()" << std ::endl;
 }
-WrongCat ::WrongCat(const WrongCat &other): WrongAnimal(other) {
+WrongCat ::WrongCat(const WrongCat &other) {
+  this->type = other.type;
   std ::cout << "WrongCat" << "(const " << "WrongCat" << "&)" << std ::endl;
 }
 WrongCat &WrongCat ::operator=(const WrongCat &other) {

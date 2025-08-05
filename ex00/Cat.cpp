@@ -4,8 +4,7 @@ Cat ::Cat() {
 	type = "Cat";
 	std ::cout << "Cat" << "()" << std ::endl;
 }
-Cat ::Cat(const Cat &other) {
-  this->type = other.type;
+Cat ::Cat(const Cat &other): Animal(other) {
   std ::cout << "Cat" << "(const " << "Cat" << "&)" << std ::endl;
 }
 Cat &Cat ::operator=(const Cat &other) {
