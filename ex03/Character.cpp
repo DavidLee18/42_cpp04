@@ -1,23 +1,34 @@
 #include "Character.h"
 
-Character ::Character(std ::string const &name) : name(name) {
+Character ::Character(std ::string const &name) : history(), name(name) {
   for (size_t i = 0; i < 4; i++)
     slots[i] = NULL;
   std ::cout << "Character" << "(" << "std::string const& name" << ")"
              << std ::endl;
 }
-Character ::Character(Character &other) : name(other.name) {
-  for (size_t i = 0; i < 4; i++) {
-    slots[i] = other.slots[i];
-    other.slots[i] = NULL;
-  }
+Character ::Character(const Character &other) : history(), name(other.name) {
+    for (size_t i = 0; i < 4; i++) {
+        if (other.slots[i]) {
+            AMateria* cloned = other.slots[i]->clone();
+            slots[i] = cloned;
+            history.add(cloned);
+        } else {
+            slots[i] = NULL;
+        }
+    }
   std ::cout << "Character" << "(const " << "Character" << "&)" << std ::endl;
 }
-Character &Character ::operator=(Character &other) {
+Character &Character ::operator=(const Character &other) {
+  this->history.clear();
   this->name = other.name;
   for (size_t i = 0; i < 4; i++) {
-    slots[i] = other.slots[i];
-    other.slots[i] = NULL;
+      if (other.slots[i]) {
+          AMateria* cloned = other.slots[i]->clone();
+          slots[i] = cloned;
+          history.add(cloned);
+      } else {
+          slots[i] = NULL;
+      }
   }
   std ::cout << "Character" << "::operator=(const " << "Character" << "&)"
              << std ::endl;
@@ -31,6 +42,7 @@ void Character::equip(AMateria *m) {
   for (size_t i = 0; i < 4; i++) {
     if (!slots[i] && m) {
       slots[i] = m;
+      history.add(m);
       return;
     }
   }

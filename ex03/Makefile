@@ -1,4 +1,4 @@
-SOURCE := main.cpp AMateria.cpp IceMateria.cpp CureMateria.cpp Character.cpp MateriaSource.cpp
+SOURCE := main.cpp AMateria.cpp IceMateria.cpp CureMateria.cpp Character.cpp MateriaSource.cpp Vec.cpp
 
 NAME := interface_and_recap
 

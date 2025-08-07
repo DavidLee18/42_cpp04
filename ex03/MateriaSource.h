@@ -8,10 +8,7 @@ class MateriaSource: public IMateriaSource {
     private:
         AMateria* mats[4];
     public:
-      MateriaSource();
-      MateriaSource(MateriaSource &);
-      MateriaSource &operator=(MateriaSource &);
-      ~MateriaSource();
+      DEF_OCF(MateriaSource)
       void learnMateria(AMateria *);
       AMateria *createMateria(std::string const &);
 };

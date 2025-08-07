@@ -2,18 +2,17 @@
 #define CHARACTER_H
 
 #include "ICharacter.h"
+#include "Vec.h"
 #include "macros.def"
 
 class Character : public ICharacter {
     private:
+        Vec history;
         AMateria *slots[4];
         std::string name;
 
     public:
-        Character(std ::string const &);
-        Character(Character &);
-        Character &operator=(Character &);
-        ~Character();
+        DEF_OCF_(Character, const std::string&)
         std::string const &getName() const;
         void equip(AMateria*);
         void unequip(int);
